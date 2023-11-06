@@ -2,13 +2,13 @@
 ################## Introduction to R code ###################
 #############################################################
 
-# This file of R code was written to take the output from the
-# python code and reshape the data so that ratios of the 
-# radius and the relative fluorescence intensity (RFI) as 
-# well as the summary statistics can be calculated. The final 
-# output is a plot showing the average and standard deviation 
-# of the BONCAT label across the analyzed MMB consortia. The
-# plot shows the radius from the center of the averaged MMB
+# This file of R code was written to analyze the output from the
+# python code. The R code reshapes the data so that ratios of 
+# the radius and the relative fluorescence intensity (RFI) as 
+# well as the summary statistics are calculated. This code 
+# outputs several plots to show the  average and standard 
+# deviation of the BONCAT label across the analyzed MMB consortia.
+# The plot shows the radius from the center of the averaged MMB
 # with the center being represented by the value 0 and the 
 # edge of the averaged MMB represented by the value 1, shown
 # the the x-axis labeled "Scaled Radius". The Y-axis shows 
@@ -267,3 +267,31 @@ finalmetadata %>%
 
 # Save plot
 dev.off()
+
+
+#############################################################
+################ Combined line and boxplot ##################
+#############################################################
+
+# Create file to save plot
+png("combined_plots.png", 
+    width = 250, 
+    height = 250, 
+    units='mm', 
+    res = 800)
+
+# Create a line plot and boxplot combined
+ggplot(finalmetadata, aes(x = Radius, y = Average)) +
+  geom_boxplot(aes(group = quarter), fill = "mistyrose2", position = position_dodge(width = 0.75)) +
+  geom_line(data = subset(finalmetadata, !is.na(Radius)), aes(x = Radius, y = Average), linewidth = 1.5) +
+  coord_cartesian(ylim = c(-0.1, 1.01)) +
+  theme_test(base_rect_size = 1) +
+  theme(axis.text = element_text(size = 26, color="black"),
+        axis.title = element_text(size = 26, color="black"),
+        axis.text.x = element_text(size = 26, color="black")) +
+  ylab("Relative fluorescence intensity") +
+  xlab("Relative radius from center of consortium")
+
+# Save plot
+dev.off()
+
